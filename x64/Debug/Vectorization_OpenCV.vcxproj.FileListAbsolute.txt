@@ -1,0 +1,2 @@
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\x64\Debug\Vectorization_OpenCV.exe
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\x64\Debug\Vectorization_OpenCV.pdb
