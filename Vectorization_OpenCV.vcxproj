@@ -155,6 +155,13 @@
   <ItemGroup>
     <ClCompile Include="src\Vectorization_OpenCV.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+    <Text Include="Materials\0.txt" />
+    <Text Include="Materials\1.txt" />
+    <Text Include="Materials\2.txt" />
+    <Text Include="Materials\3.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

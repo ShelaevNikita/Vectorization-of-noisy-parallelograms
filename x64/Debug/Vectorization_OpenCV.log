@@ -1,7 +1,30 @@
 ﻿  Vectorization_OpenCV.cpp
-D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(80,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
-D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(80,12): message : consider using '%zd' in the format string
-D:\Microsoft Visual Studio 2019\VC\Tools\MSVC\14.25.28610\include\utility(151,1): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(118,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(118,12): message : consider using '%zd' in the format string
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(123,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(123,12): message : consider using '%zd' in the format string
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(128,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(128,12): message : consider using '%zd' in the format string
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(211,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(211,12): message : consider using '%zd' in the format string
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(216,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(216,12): message : consider using '%zd' in the format string
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(221,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(221,12): message : consider using '%zd' in the format string
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(226,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(226,12): message : consider using '%zd' in the format string
+D:\Microsoft Visual Studio 2019\VC\Tools\MSVC\14.25.28610\include\utility(207,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(46): message : see reference to function template instantiation 'std::pair<float,float>::pair<double,double,0>(std::pair<double,double> &&) noexcept' being compiled
+D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(46): message : see reference to function template instantiation 'std::pair<float,float>::pair<double,double,0>(std::pair<double,double> &&) noexcept' being compiled
+D:\Microsoft Visual Studio 2019\VC\Tools\MSVC\14.25.28610\include\utility(207,1): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
           with
           [
               _Ty=double
@@ -9,17 +32,5 @@ D:\Microsoft Visual Studio 2019\VC\Tools\MSVC\14.25.28610\include\utility(151,1)
           and
           [
               _Ty2=float
-          ]
-D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(50): message : see reference to function template instantiation 'std::pair<float,float>::pair<float,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
-          with
-          [
-              _Other1=float,
-              _Other2=double
-          ]
-D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\src\Vectorization_OpenCV.cpp(42): message : see reference to function template instantiation 'std::pair<float,float>::pair<float,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
-          with
-          [
-              _Other1=float,
-              _Other2=double
           ]
   Vectorization_OpenCV.vcxproj -> D:\C_Projects\Vectorization_OpenCV\Vectorization_OpenCV\x64\Debug\Vectorization_OpenCV.exe
