@@ -3,3 +3,8 @@
 ################################################################################
 
 /.vs
+/x64
+Vectorization_OpenCV.sln
+Vectorization_OpenCV.vcxproj
+Vectorization_OpenCV.vcxproj.filters
+Vectorization_OpenCV.vcxproj.user
