@@ -15,7 +15,8 @@ using namespace std;
 class Vectorization {
 
 public:
-    static void parallelogram(vector<pair<float, float>>* inputPoints, vector<Vec3d>* outputLines) {
+    static void parallelogram(vector<pair<float, float>>* inputPoints, vector<Vec3d>* outputLines,
+        double rhoStep = 0.1, double thetaStep = CV_PI / 7200.0) {
 
         Mat lines;
         vector<Point2f> pointVector;
@@ -31,11 +32,11 @@ public:
             rhoApproximation = rhoApproximation < distance ? distance : rhoApproximation;
         }
 
-        double rhoMin = 0.0, rhoMax = rhoApproximation * 1.2, rhoStep = 0.1; // let's add 20% to rhoApproximation
-        double thetaMin = 0.0, thetaMax = CV_PI * 2.0, thetaStep = CV_PI / 7200.0; //step ~~ 0.1 degree (now 0.025 degrees)
-        HoughLinesPointSet(pointVector, lines, 400, 1,
-            rhoMin, rhoMax, rhoStep,
-            thetaMin, thetaMax, thetaStep);
+        double rhoMin = 0.0, rhoMax = rhoApproximation * 1.2; // let's add 20% to rhoApproximation
+        double thetaMin = 0.0, thetaMax = CV_PI * 2.0; // default thetaStep == (pi/180)/40 ~~ 0.025 degrees
+        HoughLinesPointSet(pointVector, lines, 600, 1,   // 600 линий необходимо для 2.txt, иначе для него 4 пучок оказывается слишком мал.
+            rhoMin, rhoMax, rhoStep,                     // Однако в этом случае в 1.txt появляется куча слишком отклоняющихся линий. 
+            thetaMin, thetaMax, thetaStep);              // Но эти линии фильтруются нашими границами в if'ах и выходит нормально.
 
         lines.copyTo(*outputLines);
     }
@@ -92,6 +93,17 @@ public:
         }
     }
 };
+
+/*
+    For 2.txt value ranges for distinguishing 4 different bunches are as follows:
+              rho>=  rho<=  theta>=  theta<=
+    1 bunch:  23     39     2.33     2.5
+    2 bunch:  62     73     5.59     5.66
+    3 bunch:  54     68     0.67     0.88
+    4 bunch:  29     41     3.81     4.0
+
+    для того чтобы получить 4 пучка для 2.txt, надо подставить эти значения в if'ы в верхнюю функцию
+*/
 
 int main()
 {
