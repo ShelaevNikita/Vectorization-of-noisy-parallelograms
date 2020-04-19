@@ -136,7 +136,7 @@ public:
 
         // Note: you should tie points to leaders from bottom to top only if you confirm that 4 leaders are actually different
 
-        double interval = rhoStep * 3;
+        double interval = rhoStep * 5;
         double distance, x, y, k, b;
         for (int i = 0; i < points->size(); i++) {
             for (int j = 3; j > -1; j--) {
