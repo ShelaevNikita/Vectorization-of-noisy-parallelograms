@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <opencv2/core.hpp>
 #include <cmath>
 
@@ -24,7 +24,7 @@ public:
     }
 
 private:
-    void find_pairs(double res[4][3], pair<pair<int, int>, pair<int, int>>(&result)) {
+    static void find_pairs(double res[4][3], pair<pair<int, int>, pair<int, int>>(&result)) {
         double k = res[0][0];
         double min = k;
         for (int i = 1; i <= 3; i++) {
@@ -43,7 +43,7 @@ private:
         }
     }
 
-    void find_min_MSD_para(double(&res)[4][3], pair<int, int> pair1, vector<vector<pair<double, double>>> array_of_points) {
+    void find_min_MSD_para(double (&res)[4][3], pair<int, int> pair1, vector<vector<pair<double, double>>> array_of_points) {
         double result = 0.0;
         double result_last = result + 2 * error_MSD;
         int counter = 0;
@@ -52,8 +52,8 @@ private:
         double b2 = (res[pair1.second][1] + res[pair1.second][2]) / 2;
         double k = (res[pair1.first][0] + res[pair1.second][0]) / 2;
         while (err >= error_MSD && counter <= max_counter) {
-             result = f_min_para(res[pair1.first][1], res[pair1.first][2], res[pair1.second][1], res[pair1.second][2],
-                 k, b1, b2, array_of_points[pair1.first], array_of_points[pair1.second]);
+             result = f_min_para(res[pair1.first][1], res[pair1.first][2], res[pair1.second][1], 
+                 res[pair1.second][2], k, b1, b2, array_of_points[pair1.first], array_of_points[pair1.second]);
              err = abs(result_last - result);
              result_last = result;
              counter++;
@@ -66,8 +66,8 @@ private:
         res[pair1.second][2] = sqrt(result);
     }
 
-    double foo_fmin_para(double& k, double sum, double b1, double b2,
-        vector<pair<double, double>> points1, vector<pair<double, double>> points2) {
+    static double foo_fmin_para(double &k, double sum, double b1, double b2,
+            vector<pair<double, double>> points1, vector<pair<double, double>> points2) {
         int size1 = points1.size();
         int size2 = points2.size();
         double k1 = 0.0;
@@ -86,8 +86,8 @@ private:
         return (k1 + k2);
     }
 
-    double f_min_para(double bmin1, double bmax1, double bmin2, double bmax2, double& k, double &b1, double &b2,
-        vector<pair<double, double>> points1, vector<pair<double, double>> points2) {
+    double f_min_para(double bmin1, double bmax1, double bmin2, double bmax2, double &k, double &b1, double &b2,
+            vector<pair<double, double>> points1, vector<pair<double, double>> points2) {
         double sum = 0.0;
         double Lcenter, Rcenter, Lfcenter, Rfcenter, beg, end, BegBuf, EndBuf;
         for (int i = 0; i < points1.size(); i++)
@@ -139,7 +139,8 @@ private:
         return (foo_fmin_para(k, sum, b1, b2, points1, points2));
     }
 
-    void find_min_MSD_mono(double(&res)[4][3], int number, vector<vector<pair<double, double>>> array_of_points) {
+    void find_min_MSD_mono(double(&res)[4][3], int number,
+                vector<vector<pair<double, double>>> array_of_points) {
         double b = (res[number][1] + res[number][2]) / 2;
         double result = 0.0;
         double result_last = result + 2 * error_MSD;
@@ -155,7 +156,7 @@ private:
         res[number][2] = sqrt(result);
     }
 
-    double foo_fmin_mono(double& k, double sum, double b, vector<pair<double, double>> points) {
+   static double foo_fmin_mono(double &k, double sum, double b, vector<pair<double, double>> points) {
         int size = points.size();
         int i;
         double k1 = 0.0;
@@ -205,52 +206,53 @@ private:
         return (foo_fmin_mono(k, sum, b, points));
     }
 
-    void intersection(double res[4][3], int pair1, double (&result)[4][2]) {
-        int counter = 0;
+    static vector<pair<double, double>> intersection(double res[4][3], int pair1) {
+        vector<pair<double, double>> result;
         int f = 0;
+        double x, y;
         for (int j = 0; j <= 1; j++) {
             for (int i = 1; i <= 3; i++) {
                 if (i != pair1) {
-                    double x = (res[i][1] - res[f][1]) / (res[f][0] - res[i][0]);
-                    result[counter][0] = x;
-                    result[counter][1] = res[f][0] * x + res[f][1];
-                    counter++;
+                    x = (res[i][1] - res[f][1]) / (res[f][0] - res[i][0]);
+                    y = res[f][0] * x + res[f][1];
+                    result.push_back(make_pair(x, y));
                 }
             }
             f = pair1;
         }
-        return;
+        return result;
     }
 
-    double comparison(double res_para[4][3], double res_mono[4][3], pair<pair<int, int>, pair<int, int>> pair1, 
-        double result_para[4][2], double result_mono[4][2], vector<pair<double, double>>* result) {
-        double error_result = 0.0;
+    static vector<pair<double, double>> comparison(double res_para[4][3], double res_mono[4][3], 
+                pair<pair<int, int>, pair<int, int>> pair1, vector<pair<double, double>> result_para, 
+                vector<pair<double, double>> result_mono, double &error_result) {
+        vector<pair<double, double>> result;
         int pair_first = pair1.first.first;
         int pair_second = pair1.first.second;
         for (int i = 0; i <= 1; i++) {
            double compare = res_para[pair_first][2] / (res_mono[pair_first][2] + res_mono[pair_second][2]);
            /*!*/ cout << " Compare = MSD_para / (MSD_mono1 + MSD_mono2) = " << compare << endl; 
            if (compare > 1) {
-                result->push_back(make_pair(result_mono[pair_first][0], result_mono[pair_first][1]));
+                result.push_back(make_pair(result_mono[pair_first].first, result_mono[pair_first].second));
                 /*!*/ printf("\t quadrangle\n");
-                result->push_back(make_pair(result_mono[pair_second][0], result_mono[pair_second][1]));
+                result.push_back(make_pair(result_mono[pair_second].first, result_mono[pair_second].second));
                 error_result += (res_mono[pair_first][2] + res_mono[pair_second][2]);
            } else {
-                result->push_back(make_pair(result_para[pair_first][0], result_para[pair_first][1]));
+                result.push_back(make_pair(result_para[pair_first].first, result_para[pair_first].second));
                 /*!*/ printf("\t parallelogram\n");
-                result->push_back(make_pair(result_para[pair_second][0], result_para[pair_second][1]));
+                result.push_back(make_pair(result_para[pair_second].first, result_para[pair_second].second));
                 error_result += res_para[pair_first][2];
            }
            pair_first = pair1.second.first;
            pair_second = pair1.second.second;
         }
-        return error_result;
+        return result;
     }
 
  public:
-    void MSD_main(vector<vector<pair<double, double>>> Points, vector<pair<double, double>> Lines, 
-        vector<pair<double, double>>* result, double &error_result) {
-        double res_para[4][3], res_mono[4][3], result_para[4][2], result_mono[4][2];
+     vector<pair<double, double>> MSD_main(vector<vector<pair<double, double>>> Points, 
+             vector<pair<double, double>> Lines, double &error_result) {
+        double res_para[4][3], res_mono[4][3];
         int i;
         for (i = 0; i <= 3; i++) {
             double bsr = Lines[i].second;
@@ -273,17 +275,16 @@ private:
         find_min_MSD_para(res_para, squad_of_pairs.second, Points);
         for (i = 0; i <= 3; i++) 
             find_min_MSD_mono(res_mono, i, Points);
-        intersection(res_para, squad_of_pairs.first.second, result_para);
-        intersection(res_mono, squad_of_pairs.first.second, result_mono);
+        vector<pair<double, double>> result_para = intersection(res_para, squad_of_pairs.first.second);
+        vector<pair<double, double>> result_mono = intersection(res_mono, squad_of_pairs.first.second);
         /*!*/ for (i = 0; i <= 3; i++)
         /*!*/    cout << " k_para = " << res_para[i][0] << "\t b_para = " << res_para[i][1] <<
         /*!*/        "\t MSD_para = " << res_para[i][2] << endl;
         /*!*/ for (i = 0; i <= 3; i++)
         /*!*/   cout << "\t k_mono = " << res_mono[i][0] << "\t b_mono = " << res_mono[i][1] <<
         /*!*/       "\t MSD_mono = " << res_mono[i][2] << endl;
-        vector<pair<double, double>> result_full;
-        error_result = comparison(res_para, res_mono, squad_of_pairs, result_para, result_mono, &result_full);
-        for (i = 0; i < 4; i++)
-            result->push_back(result_full.at(i));
-    }
+        vector<pair<double, double>> result_full = 
+            comparison(res_para, res_mono, squad_of_pairs, result_para, result_mono, error_result);
+        return result_full;
+     }
 };
