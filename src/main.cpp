@@ -9,22 +9,25 @@ using namespace std;
 class Main {
 
 private:
-    static int parseString(string path, vector<string>* argv) {
+    static vector<string> parseString(string path, int &size) {
+        vector<string> argv;
         ifstream inputFile(path);
         string temp = "";
         if (!inputFile.is_open())
             throw ios_base::failure("Incorrect filepath");
         else 
            while (inputFile >> temp)
-                argv->push_back(temp);
+                argv.push_back(temp);
         inputFile.close();
-        return (argv->size());
+        size = argv.size();
+        return argv;
     }
 
 public:
-    static void main_foo(string input, vector<vector<pair<double, double>>>* result) {
-        vector<string> argv;
-        int number = parseString(input, &argv);
+    static vector<vector<pair<double, double>>> main_foo(string input) {
+        int number = 0;
+        vector<string> argv = parseString(input, number);
+        vector<vector<pair<double, double>>> full_result;
         for (int i = 0; i < number; i++) {
             Vectorization mainObject(0.1, CV_PI / 3600.0);
             vector<pair<float, float>> points;
@@ -61,23 +64,22 @@ public:
                            0 <= d <= 0.5; default d = 0.15; count >= 1; default count = 2
             */
             MSD MSD_foo(1.0e-25, 1.0e-50, 3000, 0.15, 2);
-            vector<pair<double, double>> result_k;
-            double error_result;
-            MSD_foo.MSD_main(pointsSet, leaders, &result_k, error_result);
+            double error_result = 0.0;
+            vector<pair<double, double>> result_k = MSD_foo.MSD_main(pointsSet, leaders, error_result);
             /*!*/ cout << "\t\t error_result = " << error_result << "\n\t\t result:" << endl;
             /*!*/ for (int i = 0; i <= 3; i++)
             /*!*/    cout << " \t x = " << result_k[i].first << " \t  y = " << result_k[i].second << endl;
-            result->push_back(result_k);
+            full_result.push_back(result_k);
         }
+        return full_result;
     }
 };
 
 int main() {
-    vector<vector<pair<double, double>>> result;
     string input = ".\\Materials\\full.txt";
     /*!*/ cout << fixed;
     /*!*/ cout.precision(6);
-    Main::main_foo(input, &result);
+    vector<vector<pair<double, double>>> result = Main::main_foo(input);
     /*!*/ int size = result.size();
     /*!*/ cout << "\n\t\t size of full result = " << size << "\n" << endl;
 }
