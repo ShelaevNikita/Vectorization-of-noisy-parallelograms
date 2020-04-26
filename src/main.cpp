@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 #include <opencv2/core.hpp>
@@ -84,5 +83,4 @@ int main()
     cout << fixed;
     cout.precision(6);
     Main::main_foo(number, argv, &result);
->>>>>>> e4fc59a8eddfefe1a2441623786f8306ccedcfa8
 }

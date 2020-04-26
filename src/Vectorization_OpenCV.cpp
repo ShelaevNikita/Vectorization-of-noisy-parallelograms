@@ -1,5 +1,4 @@
-
-﻿#include <iostream>
+#include <iostream>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -128,4 +127,4 @@ public:
         }
     }
 };
->>>>>>> e4fc59a8eddfefe1a2441623786f8306ccedcfa8
+
