@@ -18,5 +18,5 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 add_executable(${PROJECT_NAME} ${SOURCES_DIR}Vectorization_OpenCV.cpp
         ${SOURCES_DIR}Vectorization_parallelograms.cpp
         ${SOURCES_DIR}MSD.cpp
-        ${SOURCES_DIR}main.cpp)
+        ${SOURCES_DIR}main.cpp src/main/debug.h)
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})

@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <opencv2/core.hpp>
 #include <cmath>
+#include "debug.h"
 
 using namespace cv;
 using namespace std;
@@ -239,17 +240,15 @@ private:
             int para_1 = para[i][0];
             int para_2 = para[i][1];
             double compare = res_para[para_1][2] / (res_mono[para_1][2] + res_mono[para_2][2]);
-            cout << " Compare = MSD_para / (MSD_mono1 + MSD_mono2) = " << compare << endl;
+            SAY(" Compare = MSD_para / (MSD_mono1 + MSD_mono2) = %f\n",compare);
             if (compare > 1) {
                 result->push_back(make_pair(result_mono[para_1][0], result_mono[para_1][1]));
-                printf("\t quadrangle\n");
                 result->push_back(make_pair(result_mono[para_2][0], result_mono[para_2][1]));
-                printf("\t quadrangle\n");
+                SAY("\t quadrangle\n");
             } else {
                 result->push_back(make_pair(result_para[para_1][0], result_para[para_1][1]));
-                printf("\t parallelogram\n");
                 result->push_back(make_pair(result_para[para_2][0], result_para[para_2][1]));
-                printf("\t parallelogram\n");
+                SAY("\t parallelogram\n");
             }
         }
     }
@@ -274,8 +273,7 @@ public:
                 res_mono[i][k] = res_para[i][k];
         }
         for (i = 0; i <= 3; i++)
-            cout << "\t k = " << res_para[i][0] << "\t bmin = " << res_para[i][1] << "\t bmax = " << res_para[i][2]
-                 << endl;
+            SAY("\t k = %f\t bmin = %f\t bmax = %f\n", res_para[i][0], res_para[i][1], res_para[i][2]);
         int squad_of_pairs[2][2];
         find_pairs(res_para, squad_of_pairs);
         for (i = 0; i <= 1; i++)
@@ -285,11 +283,10 @@ public:
         intersection(res_para, squad_of_pairs[0][1], result_para);
         intersection(res_mono, squad_of_pairs[0][1], result_mono);
         for (i = 0; i <= 3; i++)
-            cout << " k_para = " << res_para[i][0] << "\t b_para = " << res_para[i][1] <<
-                 "\t MSD_para = " << res_para[i][2] << endl;
+            SAY(" k_para = %f\t b_para = %f\t MSD_para = %f\n", res_para[i][0], res_para[i][1], res_para[i][2]);
+
         for (i = 0; i <= 3; i++)
-            cout << "\t k_mono = " << res_mono[i][0] << "\t b_mono = " << res_mono[i][1] <<
-                 "\t MSD_mono = " << res_mono[i][2] << endl;
+            SAY("\t k_mono = %f\t b_mono = %f\t MSD_mono = %f\n", res_mono[i][0], res_mono[i][1], res_mono[i][2]);
         vector<pair<double, double>> result_full;
         comparison(res_para, res_mono, squad_of_pairs, result_para, result_mono, &result_full);
         for (i = 0; i < 4; i++)

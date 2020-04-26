@@ -6,19 +6,7 @@
 
 #include "Vectorization_OpenCV.cpp"
 #include "MSD.cpp"
-
-#define DEBUG
-
-#ifdef DEBUG
-
-#define SAY(x...) fprintf(stderr, x)
-
-#else
-
-#define SAY(X...)
-
-#endif
-
+#include "debug.h"
 using namespace cv;
 using namespace std;
 
@@ -83,11 +71,6 @@ private:
         vector<Vec3d> line3dFirst;
         mainObject.parallelogram(&points, &line3dFirst);
 
-        // basic console output to rank all the lines by their votes
-
-        for (auto &i : line3dFirst)
-            SAY("votes:%d, rho:%.7f, theta:%.7f\n", (int) i.val[0], i.val[1], i.val[2]);
-
         SAY("Number of lines: %lu\n", line3dFirst.size());
 
         // Finding 4 leaders of 1.txt and distributing its points between the 4 leaders
@@ -122,7 +105,7 @@ private:
         SAY("\t\t     result: \n");
         for (int i = 0; i <= 3; i++)
             SAY(" \t x = %f \t y = %f\n", result_k[i].first, result_k[i].second);
-
+        SAY("___________________________________________________________________________\n");
         return result_k;
     }
 };
