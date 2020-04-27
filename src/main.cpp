@@ -9,7 +9,7 @@ using namespace std;
 class Main {
 
 private:
-    static vector<string> parseString(string path, int &size) {
+    static vector<string> parseString_Input(string path, int &size) {
         vector<string> argv;
         ifstream inputFile(path);
         string temp = "";
@@ -23,10 +23,26 @@ private:
         return argv;
     }
 
+    static void parseString_Output(string path, vector<vector<pair<double, double>>> result, int number) {
+        ofstream outputFile(path);
+        if (!outputFile.is_open())
+            throw ios_base::failure("Incorrect filepath");
+        else {
+            outputFile << fixed;
+            outputFile.precision(7);
+            for (int j = 0; j < number; j++) {
+                for (int i = 0; i <= 3; i++)
+                    outputFile << result[j][i].first << " " << result[j][i].second << "\n";
+                outputFile << "\n";
+            }
+            outputFile.close();
+        }
+    }
+
 public:
-    static vector<vector<pair<double, double>>> main_foo(string input) {
+    static vector<vector<pair<double, double>>> main_foo(string input, string output) {
         int number = 0;
-        vector<string> argv = parseString(input, number);
+        vector<string> argv = parseString_Input(input, number);
         vector<vector<pair<double, double>>> full_result;
         for (int i = 0; i < number; i++) {
             Vectorization mainObject(0.1, CV_PI / 3600.0);
@@ -71,15 +87,17 @@ public:
             /*!*/    cout << " \t x = " << result_k[i].first << " \t  y = " << result_k[i].second << endl;
             full_result.push_back(result_k);
         }
+        parseString_Output(output, full_result, number);
         return full_result;
     }
 };
 
 int main() {
     string input = ".\\Materials\\full.txt";
+    string output = ".\\Materials\\result.txt";
     /*!*/ cout << fixed;
-    /*!*/ cout.precision(6);
-    vector<vector<pair<double, double>>> result = Main::main_foo(input);
+    /*!*/ cout.precision(7);
+    vector<vector<pair<double, double>>> result = Main::main_foo(input, output);
     /*!*/ int size = result.size();
     /*!*/ cout << "\n\t\t size of full result = " << size << "\n" << endl;
 }
