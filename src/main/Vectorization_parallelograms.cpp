@@ -65,7 +65,7 @@ private:
     vectorization(vector<pair<float, float >> points,
                   error_vectorization error) {
 
-        Vectorization mainObject(error.rhoStep, error.thetaStep, error.interval);
+        Vectorization mainObject(error.rhoStep, error.thetaStep, error.interval, Vectorization::ShortestDistance);
 
         // MAIN CALL of parallelogram
         vector<Vec3d> line3dFirst;

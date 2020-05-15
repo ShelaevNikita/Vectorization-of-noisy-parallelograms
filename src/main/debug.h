@@ -9,7 +9,7 @@
 
 #ifdef DEBUG
 
-#define SAY(x...) fprintf(stderr, x)
+#define SAY(...) fprintf(stderr, __VA_ARGS__)
 
 #else
 

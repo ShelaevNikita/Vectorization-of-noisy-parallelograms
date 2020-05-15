@@ -8,7 +8,7 @@ if (WIN32)
 elseif (UNIX)
     set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src/main/)
 else ()
-    message(FATAL_ERROR "РќРµРёР·РІРµСЃС‚РЅР°СЏ СЃРёСЃС‚РµРјР°")
+    message(FATAL_ERROR "Неизвестная система")
 endif ()
 
 find_package(OpenCV REQUIRED)
