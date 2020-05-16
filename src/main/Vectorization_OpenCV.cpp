@@ -11,7 +11,7 @@
 using namespace cv;
 using namespace std;
 
-class Vectorization {
+class LineExtraction {
 
 public:
     enum distributionType {
@@ -31,7 +31,7 @@ public:
     // Second distribution type: point goes ONLY to least voted by Hough line, if "close" to it.
     // Third distribution type: point goes to 2 "closest" lines.
 
-    Vectorization(double rhoStepInit, double thetaStepInit, double intervalInit, distributionType newType = ShortestDistance)
+    LineExtraction(double rhoStepInit, double thetaStepInit, double intervalInit, distributionType newType = ShortestDistance)
     {
         rhoStep = rhoStepInit;
         thetaStep = thetaStepInit;
@@ -95,7 +95,7 @@ public:
             a = cos(leadersTemp.at(i).second); // A = cos(theta)
             b = sin(leadersTemp.at(i).second); // B = sin(theta)
             c = -leadersTemp.at(i).first; // C = -r
-            leaders->push_back(lineABC(a, b, c)); // r = x*cos(theta) + y*sin(theta) -> Ax + By + C = 0
+            leaders->push_back(lineABC{ a, b, c }); // r = x*cos(theta) + y*sin(theta) -> Ax + By + C = 0
         }
 
     }
@@ -112,9 +112,9 @@ public:
                 for (int j = 3; j > -1; j--) {
                     x = points->at(i).first;
                     y = points->at(i).second;
-                    a = leaders->at(j).A;
-                    b = leaders->at(j).B;
-                    c = leaders->at(j).C;
+                    a = leaders->at(j).a;
+                    b = leaders->at(j).b;
+                    c = leaders->at(j).c;
 
                     distance = abs(a * x + b * y + c) / sqrt(a * a + b * b);
 
@@ -131,9 +131,9 @@ public:
                 for (int j = 3, used = 0; j > -1 && used < type; j--) { // used depends on type in number form
                     x = points->at(i).first;
                     y = points->at(i).second;
-                    a = leaders->at(j).A;
-                    b = leaders->at(j).B;
-                    c = leaders->at(j).C;
+                    a = leaders->at(j).a;
+                    b = leaders->at(j).b;
+                    c = leaders->at(j).c;
 
                     distance = abs(a * x + b * y + c) / sqrt(a * a + b * b);
 

@@ -68,7 +68,7 @@ private:
     vectorization(vector<pair<float, float >> points,
                   error_vectorization error) {
 
-        Vectorization mainObject(error.rhoStep, error.thetaStep, error.interval, Vectorization::ShortestDistance);
+        LineExtraction mainObject(error.rhoStep, error.thetaStep, error.interval, LineExtraction::ShortestDistance);
 
         // MAIN CALL of parallelogram
         vector<Vec3d> line3dFirst;
@@ -84,8 +84,8 @@ private:
         mainObject.pointDistribution(&leaders, &points, &pointsSet);
 
         for (int i = 0; i < 4; i++) {
-            SAY("Leader %d: %lu points, %fx + %fy + %f = 0 \n", i + 1, pointsSet[i].size(), leaders[i].A,
-                leaders[i].B, leaders[i].C);
+            SAY("Leader %d: %lu points, %fx + %fy + %f = 0 \n", i + 1, pointsSet[i].size(), leaders[i].a,
+                leaders[i].b, leaders[i].c);
             for (auto &j : pointsSet[i])
                 SAY("\t(%f, %f)\n", j.first, j.second);
         }
