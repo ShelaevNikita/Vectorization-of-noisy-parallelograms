@@ -3,6 +3,8 @@
 #include <cmath>
 #include "debug.h"
 
+#include "Structures.cpp" //!!!
+
 using namespace cv;
 using namespace std;
 

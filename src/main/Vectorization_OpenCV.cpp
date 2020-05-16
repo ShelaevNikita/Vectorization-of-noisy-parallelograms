@@ -6,6 +6,8 @@
 
 #include <cmath>
 
+#include "Structures.cpp"
+
 using namespace cv;
 using namespace std;
 
@@ -62,17 +64,18 @@ public:
     }
 
 
-    void fourLeaders(vector<Vec3d>* houghOutput, vector<pair<double, double>>* leaders) {
+    void fourLeaders(vector<Vec3d>* houghOutput, vector<lineABC>* leaders) {
 
         double rhoInterval = rhoStep * 30, thetaInterval = thetaStep * 600;
         double deltaRho, deltaTheta;
 
-        leaders->push_back(make_pair(houghOutput->at(0).val[1], houghOutput->at(0).val[2]));
+        vector<pair<double, double>> leadersTemp;
+        leadersTemp.push_back(make_pair(houghOutput->at(0).val[1], houghOutput->at(0).val[2]));
         int i = 1;
         bool inBunch;
-        while (leaders->size() < 4 && i < houghOutput->size()) {
+        while (leadersTemp.size() < 4 && i < houghOutput->size()) {
             inBunch = false;
-            for (auto& leader : *leaders) {
+            for (auto leader : leadersTemp) {
                 deltaRho = abs(houghOutput->at(i).val[1] - leader.first);
                 deltaTheta = abs(houghOutput->at(i).val[2] - leader.second);
                 if (deltaRho <= rhoInterval && deltaTheta <= thetaInterval) {
@@ -81,25 +84,26 @@ public:
                 }
             }
             if (!inBunch) {
-                leaders->push_back(make_pair(houghOutput->at(i).val[1], houghOutput->at(i).val[2]));
+                leadersTemp.push_back(make_pair(houghOutput->at(i).val[1], houghOutput->at(i).val[2]));
 
             }
             i++;
         }
 
-        double k, b;
+        double a, b, c;
         for (i = 0; i < 4; i++) {
-            k = -cos(leaders->at(i).second) / sin(leaders->at(i).second); // k = -cos(theta) / sin(theta)
-            b = leaders->at(i).first / sin(leaders->at(i).second); // b = r / sin(theta)
-            leaders->at(i) = make_pair(k, b);
+            a = cos(leadersTemp.at(i).second); // A = cos(theta)
+            b = sin(leadersTemp.at(i).second); // B = sin(theta)
+            c = -leadersTemp.at(i).first; // C = -r
+            leaders->push_back(lineABC(a, b, c)); // r = x*cos(theta) + y*sin(theta) -> Ax + By + C = 0
         }
 
     }
 
-    void pointDistribution(vector<pair<double, double>>* leaders, vector<pair<float, float>>* points,
+    void pointDistribution(vector<lineABC>* leaders, vector<pair<float, float>>* points,
         vector <vector<pair<double, double>>>* pointsSet) {
 
-        double distance, x, y, k, b;
+        double distance, x, y, a, b, c;
 
         if (type == ShortestDistance) { 
             for (int i = 0; i < points->size(); i++) {
@@ -108,9 +112,11 @@ public:
                 for (int j = 3; j > -1; j--) {
                     x = points->at(i).first;
                     y = points->at(i).second;
-                    k = leaders->at(j).first;
-                    b = leaders->at(j).second;
-                    distance = sqrt(pow((x + k * y - k * b) / (k * k + 1) - x, 2) + pow(k * (x + k * y - k * b) / (k * k + 1) + b - y, 2));
+                    a = leaders->at(j).A;
+                    b = leaders->at(j).B;
+                    c = leaders->at(j).C;
+
+                    distance = abs(a * x + b * y + c) / sqrt(a * a + b * b);
 
                     if (distance < minDistance) {
                         bestLine = j;
@@ -125,9 +131,12 @@ public:
                 for (int j = 3, used = 0; j > -1 && used < type; j--) { // used depends on type in number form
                     x = points->at(i).first;
                     y = points->at(i).second;
-                    k = leaders->at(j).first;
-                    b = leaders->at(j).second;
-                    distance = sqrt(pow((x + k * y - k * b) / (k * k + 1) - x, 2) + pow(k * (x + k * y - k * b) / (k * k + 1) + b - y, 2));
+                    a = leaders->at(j).A;
+                    b = leaders->at(j).B;
+                    c = leaders->at(j).C;
+
+                    distance = abs(a * x + b * y + c) / sqrt(a * a + b * b);
+
                     if (distance <= interval) {
                         pointsSet->at(j).push_back(points->at(i));
                         used++;

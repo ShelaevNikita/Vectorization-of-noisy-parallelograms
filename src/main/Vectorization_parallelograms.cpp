@@ -7,6 +7,9 @@
 #include "Vectorization_OpenCV.cpp"
 #include "MSD.cpp"
 #include "debug.h"
+
+//#include "Structures.cpp"     :It's already included in MSD.cpp or Vect...CV.cpp
+
 using namespace cv;
 using namespace std;
 
@@ -74,15 +77,15 @@ private:
         SAY("Number of lines: %lu\n", line3dFirst.size());
 
         // Finding 4 leaders of 1.txt and distributing its points between the 4 leaders
-        vector<pair<double, double>> leaders;
+        vector<lineABC> leaders;
         mainObject.fourLeaders(&line3dFirst, &leaders);
 
         vector<vector<pair<double, double>>> pointsSet(4);
         mainObject.pointDistribution(&leaders, &points, &pointsSet);
 
         for (int i = 0; i < 4; i++) {
-            SAY("Leader %d: %lu points, y = %fx + %f \n", i + 1, pointsSet[i].size(), leaders[i].first,
-                leaders[i].second);
+            SAY("Leader %d: %lu points, %fx + %fy + %f = 0 \n", i + 1, pointsSet[i].size(), leaders[i].A,
+                leaders[i].B, leaders[i].C);
             for (auto &j : pointsSet[i])
                 SAY("\t(%f, %f)\n", j.first, j.second);
         }
@@ -100,12 +103,14 @@ private:
         MSD MSD_foo(error.error_fmin, error.error_MSD, error.max_counter, error.d);
 
         vector<pair<double, double>> result_k;
+        /*
         MSD_foo.MSD_main(pointsSet, leaders, &result_k);
 
         SAY("\t\t     result: \n");
         for (int i = 0; i <= 3; i++)
             SAY(" \t x = %f \t y = %f\n", result_k[i].first, result_k[i].second);
         SAY("___________________________________________________________________________\n");
+        */
         return result_k;
     }
 };
