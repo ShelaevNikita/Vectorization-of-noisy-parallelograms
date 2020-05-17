@@ -18,7 +18,8 @@ struct error_vectorization {
             thetaStep,
             error_fmin,
             error_MSD,
-            d;
+            count;
+    
     int max_counter,
             interval;
 };
@@ -29,9 +30,9 @@ public:
     static vector<pair<double, double >>
     vectorization_parallelograms(const string &fname, error_vectorization error = {0.1,
                                                                                    CV_PI / 3600.0,
-                                                                                   1.0e-25,
-                                                                                   1.0e-50,
-                                                                                   0.15,
+                                                                                   1.0e-10,
+                                                                                   1.0e-15,
+                                                                                   2.0,
                                                                                    3000,
                                                                                    5}) {
         ifstream inputFile(fname);
@@ -54,9 +55,9 @@ public:
     vectorization_parallelograms(vector<pair<float, float>> points,
                                  error_vectorization error = {0.1,
                                                               CV_PI / 3600.0,
-                                                              1.0e-25,
-                                                              1.0e-50,
-                                                              0.15,
+                                                              1.0e-10,
+                                                              1.0e-15,
+                                                              2.0,
                                                               3000,
                                                               5}) {
 
@@ -90,27 +91,24 @@ private:
                 SAY("\t(%f, %f)\n", j.first, j.second);
         }
 
-        SAY("\n");
+       SAY("\n");
 
-        /*
+         /*
             MSD - mean square deviation:
-            error_fmin - error of the "Golden section"; default = 1.0e-15
-            error_MSD - error in finding the best result for MSD; default = 1.0e-25
-            max_counter - maximum number of iterations per cycle; default = 2500
-            d - spread of values by b (b_min, b_max) for each line; d < 0.5; default = 0.15
-        */
+            error_fmin - error of the "Golden section"; default = 1.0e-10
+            error_MSD - error in finding the best result for MSD; default = 1.0e-15
+            max_counter - maximum number of iterations per cycle; default = 3000
+            count - priority of a parallelogram in choosing between it and a quadrilateral; count > 0 , default = 1.5
+         */
 
-        MSD MSD_foo(error.error_fmin, error.error_MSD, error.max_counter, error.d);
+         MSD MSD_foo(error.error_fmin, error.error_MSD, error.max_counter, error.count);
+         double error_result = 0.0;
+         vector<pair<double, double>> result_k = MSD_foo.MSD_main(pointsSet, leaders, error_result);
 
-        vector<pair<double, double>> result_k;
-        /*
-        MSD_foo.MSD_main(pointsSet, leaders, &result_k);
-
-        SAY("\t\t     result: \n");
-        for (int i = 0; i <= 3; i++)
+         SAY("\t\t     result: \n");
+         for (int i = 0; i <= 3; i++)
             SAY(" \t x = %f \t y = %f\n", result_k[i].first, result_k[i].second);
-        SAY("___________________________________________________________________________\n");
-        */
+         SAY("___________________________________________________________________________\n");
         return result_k;
     }
 };
