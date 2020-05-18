@@ -55,7 +55,7 @@ public:
         }
 
         double rhoMin = - rhoApproximation * 1.2, rhoMax = rhoApproximation * 1.2;
-        double thetaMin = 0.0, thetaMax = CV_PI;
+        double thetaMin = 0.0, thetaMax = CV_PI - thetaStep;
         HoughLinesPointSet(pointVector, lines, 400, 1,
             rhoMin, rhoMax, rhoStep,
             thetaMin, thetaMax, thetaStep);
@@ -75,12 +75,22 @@ public:
         bool inBunch;
         while (leadersTemp.size() < 4 && i < houghOutput->size()) {
             inBunch = false;
+
             for (auto leader : leadersTemp) {
                 deltaRho = abs(houghOutput->at(i).val[1] - leader.first);
                 deltaTheta = abs(houghOutput->at(i).val[2] - leader.second);
                 if (deltaRho <= rhoInterval && deltaTheta <= thetaInterval) {
                     inBunch = true;
                     break;
+                }
+
+                if (signbit(leader.first) != signbit(houghOutput->at(i).val[1])) { // signbit returns true if x if negative
+                    deltaRho = abs(houghOutput->at(i).val[1] - (-leader.first));
+                    deltaTheta = abs(abs(houghOutput->at(i).val[2] - leader.second) - CV_PI);
+                    if (deltaRho <= rhoInterval && deltaTheta <= thetaInterval) {
+                        inBunch = true;
+                        break;
+                    }
                 }
             }
             if (!inBunch) {
