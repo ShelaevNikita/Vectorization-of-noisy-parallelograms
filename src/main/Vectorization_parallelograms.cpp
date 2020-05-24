@@ -31,9 +31,9 @@ public:
     vectorization_parallelograms(const string &fname, error_vectorization error = {0.1,
                                                                                    CV_PI / 3600.0,
                                                                                    1.0e-10,
-                                                                                   1.0e-15,
+                                                                                   1.0e-25,
                                                                                    2.0,
-                                                                                   3000,
+                                                                                   5000,
                                                                                    5}) {
         ifstream inputFile(fname);
         vector<pair<float, float>> points;
@@ -56,9 +56,9 @@ public:
                                  error_vectorization error = {0.1,
                                                               CV_PI / 3600.0,
                                                               1.0e-10,
-                                                              1.0e-15,
+                                                              1.0e-25,
                                                               2.0,
-                                                              3000,
+                                                              5000,
                                                               5}) {
 
         return vectorization(move(points), error);
