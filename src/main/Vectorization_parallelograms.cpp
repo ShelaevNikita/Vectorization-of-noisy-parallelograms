@@ -31,9 +31,9 @@ public:
     vectorization_parallelograms(const string &fname, error_vectorization error = {0.1,
                                                                                    CV_PI / 3600.0,
                                                                                    1.0e-10,
-                                                                                   1.0e-25,
-                                                                                   2.0,
-                                                                                   5000,
+                                                                                   1.0e-20,
+                                                                                   1.0,
+                                                                                   2500,
                                                                                    5}) {
         ifstream inputFile(fname);
         vector<pair<float, float>> points;
@@ -56,9 +56,9 @@ public:
                                  error_vectorization error = {0.1,
                                                               CV_PI / 3600.0,
                                                               1.0e-10,
-                                                              1.0e-25,
-                                                              2.0,
-                                                              5000,
+                                                              1.0e-20,
+                                                              1.0,
+                                                              2500,
                                                               5}) {
 
         return vectorization(move(points), error);
@@ -97,7 +97,7 @@ private:
             MSD - mean square deviation:
             error_fmin - error of the "Golden section"; default = 1.0e-10
             error_MSD - error in finding the best result for MSD; default = 1.0e-20
-            max_counter - maximum number of iterations per cycle; default = 3000
+            max_counter - maximum number of iterations per cycle; default = 2500
             count - priority of a parallelogram in choosing between it and a quadrilateral; count > 0 , default = 1.0
          */
 
