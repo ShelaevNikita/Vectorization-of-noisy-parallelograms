@@ -68,26 +68,107 @@ public:
 
 private:
 
-    static double rhoStepEstimation(vector<pair<float, float>>* points) {
-        random_device rd;   // non-deterministic generator
-        mt19937 gen(rd()); // Mersenne-Twister generator for better random numbers than rand()
-        uniform_int_distribution<> dist(0, points->size() - 1); // set distribution range to [0, n - 1]
-        int point1Index = dist(gen);
-        int point2Index = dist(gen);
-        pair<float, float> point1;
-        pair<float, float> point2;
+    struct line_result {
+        double k, bmin, bmax, b, MSD;
+        bool flag = true;
+    };
 
-        SAY("Random indicies: %d %d\n", point1Index, point2Index);
+    static void find_min_MSD(line_result (&res), vector<pair<double, double>> array_of_points) {
+        double b = (res.bmin + res.bmax) / 2;
+        double result = 0.0;
 
+        double error_MSD = 1.0e-25;
+
+        double result_last = result + 2 * error_MSD;
+        int counter = 0;
+        bool flag = true;
+        if (res.k >= 1.0e5) 
+            flag = false;
+        double err = abs(result_last - result);
+
+        int max_counter = 5000;
+
+        while (err >= error_MSD && counter <= max_counter) {
+            result = f_min(flag, res.bmin, res.bmax, res.k, b, array_of_points);
+            if (b < res.bmin + 1) res.bmin -= 30;
+            if (b > res.bmax - 1) res.bmax += 30;
+            err = abs(result_last - result);
+            result_last = result;
+            counter++;
+        }
+        if (flag == false) 
+            res.flag = false;
+        res.b = b;
+        res.MSD = sqrt(result);
+    }
+
+   static double foo_fmin(bool &flag, double &k, double sum, double b, vector<pair<double, double>> points) {
+        int size = points.size();
+        int i;
+        double k1 = 0.0;
+        for (i = 0; i < size; i++) 
+            k1 += points[i].first * (points[i].second - b);
+        k = k1 / sum;
+        if (abs(k) > 1.0e5 || sum == 0) flag = false;                          // x = b
+        k1 = 0.0;
+        for (i = 0; i < size; i++) {
+            if (flag == true) k1 += pow((points[i].second - k * points[i].first - b), 2);
+            else k1 += pow((points[i].first - b), 2);
+        }
+        return k1;
+    }
+
+    static double f_min(bool &flag, double bmin, double bmax, double &k, double &b, vector<pair<double, double>> points) {
+        double sum = 0.0;
+        for (int i = 0; i < points.size(); i++)
+            sum += pow(points[i].first, 2);
+        double Lcenter, Rcenter, Lfcenter, Rfcenter, beg, end, BegBuf, EndBuf;
+        double delta = (sqrt(5) - 1) / 2;
+        beg = bmin;
+        end = bmax;
+        BegBuf = foo_fmin(flag, k, sum, beg, points);
+        EndBuf = foo_fmin(flag, k, sum, end, points);
+
+        int max_counter = 5000;
+        double error_fmin = 1.0e-10;
+
+        for (int i = 0; i <= max_counter; i++) {
+            double g = delta * (end - beg);
+            Lcenter = end - g;
+            Lfcenter = foo_fmin(flag, k, sum, Lcenter, points);
+            Rcenter = beg + g;
+            Rfcenter = foo_fmin(flag, k, sum, Rcenter, points);
+            if (Lfcenter < Rfcenter) {
+                end = Rcenter;
+                EndBuf = Rfcenter;
+            } else if (Lfcenter > Rfcenter) {
+                beg = Lcenter;
+                BegBuf = Lfcenter;
+            } else {
+                end = Rcenter;
+                EndBuf = Rfcenter;
+                beg = Lcenter;
+                BegBuf = Lfcenter;
+            }
+            double r = fabs(end - beg);
+            if (r < error_fmin) {
+                b = (end + beg) / 2;
+                break;
+            }
+        }
+        return (foo_fmin(flag, k, sum, b, points));
+    }
+
+    static pair<int, int> twoNeighbors(vector<pair<float, float>>* points, int midPoint) {
         float distance = 0;
-        float distance1 = 1E15;
-        float distance2 = 1E15;
+        float distance1 = 1e15;
+        float distance2 = 1e15;
         int closestNeighbor1 = 0;
         int closestNeighbor2 = 0;
         for (int i = 0; i < points->size(); i++) {
-            if (i != point1Index) {
-                distance = hypot(points->at(point1Index).first - points->at(i).first,
-                    points->at(point1Index).second - points->at(i).second); // sqrt((x2-x1)^2 + (y2-y1)^2)
+            if (i != midPoint) {
+                distance = hypot(points->at(midPoint).first - points->at(i).first,
+                    points->at(midPoint).second - points->at(i).second); // sqrt((x2-x1)^2 + (y2-y1)^2)
                 if (distance < distance1) {
                     distance2 = distance1;
                     closestNeighbor2 = closestNeighbor1;
@@ -102,71 +183,74 @@ private:
             }
         }
 
+        return make_pair(closestNeighbor1, closestNeighbor2);
+    }
 
-        distance = 0;
-        distance1 = 1E15;
-        distance2 = 1E15;
-        int closestNeighbor3 = 0;
-        int closestNeighbor4 = 0;
-        for (int i = 0; i < points->size(); i++) {
-            if (i != point2Index) {
-                distance = hypot(points->at(point2Index).first - points->at(i).first,
-                    points->at(point2Index).second - points->at(i).second); // sqrt((x2-x1)^2 + (y2-y1)^2)
-                if (distance < distance1) {
-                    distance2 = distance1;
-                    closestNeighbor4 = closestNeighbor3;
+    static double rhoStepEstimation(vector<pair<float, float>>* points) {
+        random_device rd;   // non-deterministic generator
+        mt19937 gen(rd()); // Mersenne-Twister generator for better random numbers than rand()
+        uniform_int_distribution<> dist(0, points->size() - 1); // set distribution range to [0, n - 1]
+        int midPoint[3];
+        pair<int, int> neighbors[3];
+        double candidates[3];
 
-                    distance1 = distance;
-                    closestNeighbor3 = i;
-                }
+        for (int i = 0; i < 3; i++) {
+            midPoint[i] = dist(gen); // choose random point from .txt as midPoint
+            neighbors[i] = twoNeighbors(points, midPoint[i]); // find 2 closest to midPoint neighbors
+
+            line_result res;
+            double lineA = points->at(midPoint[i]).second - points->at(neighbors[i].first).second;
+            double lineB = points->at(neighbors[i].first).first - points->at(midPoint[i]).first;
+            double lineC = points->at(midPoint[i]).first * points->at(neighbors[i].first).second -
+                points->at(neighbors[i].first).first * points->at(midPoint[i]).second;
+
+            if (abs(lineA / lineB) >= 1000 && abs(lineB) <= 0.001)
+                res.flag = false;    // x = b
+
+            double bsr;
+            if (res.flag == true) {
+                bsr = -lineC / lineB;
+                res.k = -lineA / lineB;
+            }
+            else {
+                bsr = -lineC / lineA;
+                res.k = 1.0e5;                                     // x = b
+            }
+            res.bmin = bsr - 15;
+            res.bmax = bsr + 15;
+
+            vector<pair<double, double>> triplet =
+            { points->at(midPoint[i]), points->at(neighbors[i].first), points->at(neighbors[i].second) };
+            find_min_MSD(res, triplet);
+
+            double x[3] = { points->at(midPoint[i]).first,
+                    points->at(neighbors[i].first).first,
+                    points->at(neighbors[i].second).first };
+            double y[3] = { points->at(midPoint[i]).second,
+                    points->at(neighbors[i].first).second,
+                    points->at(neighbors[i].second).second };
+            double k = res.k;
+            double b = res.b;
+            candidates[i] = 0;
+            for (int j = 0; j < 3; j++) {
+                candidates[i] = max(candidates[i], 
+                    sqrt(pow((x[j] + k * y[j] - k * b) / (k * k + 1) - x[j], 2) + 
+                         pow(k * (x[j] + k * y[j] - k * b) / (k * k + 1) + b - y[j], 2))
+                );
             }
         }
 
-        SAY("(%f, %f) (%f, %f) (%f, %f)\n", points->at(point1Index).first, points->at(point1Index).second,
-            points->at(closestNeighbor1).first, points->at(closestNeighbor1).second,
-            points->at(closestNeighbor2).first, points->at(closestNeighbor2).second);
-
-        SAY("(%f, %f) (%f, %f) (%f, %f)\n", points->at(point2Index).first, points->at(point2Index).second,
-            points->at(closestNeighbor3).first, points->at(closestNeighbor3).second,
-            points->at(closestNeighbor4).first, points->at(closestNeighbor4).second);
-
-        // (y1-y2)x + (x2-x1)y + (x1y2-x2y1) = 0
-        // point1 - neighbor1; point1 - neighbor2; neighbor1 - neighbor2
-
-        double line1A = (2 * points->at(point1Index).second - 2 * points->at(closestNeighbor2).second) / 3;
-        double line1B = (2 * points->at(closestNeighbor2).first - 2 * points->at(point1Index).first) / 3;
-        double line1C = (points->at(point1Index).first * points->at(closestNeighbor1).second -
-            points->at(closestNeighbor1).first * points->at(point1Index).second +
-            points->at(point1Index).first * points->at(closestNeighbor2).second -
-            points->at(closestNeighbor2).first * points->at(point1Index).second +
-            points->at(closestNeighbor1).first * points->at(closestNeighbor2).second - 
-            points->at(closestNeighbor2).first * points->at(closestNeighbor1).second) / 3;
-
-        double candidate1 = abs(line1A * points->at(point1Index).first + line1B * points->at(point1Index).second + line1C) /
-            sqrt(line1A * line1A + line1B * line1B);
-
-
-        double line2A = (2 * points->at(point2Index).second - 2 * points->at(closestNeighbor4).second) / 3;
-        double line2B = (2 * points->at(closestNeighbor4).first - 2 * points->at(point2Index).first) / 3;
-        double line2C = (points->at(point2Index).first * points->at(closestNeighbor3).second -
-            points->at(closestNeighbor3).first * points->at(point2Index).second +
-            points->at(point2Index).first * points->at(closestNeighbor4).second -
-            points->at(closestNeighbor4).first * points->at(point2Index).second +
-            points->at(closestNeighbor3).first * points->at(closestNeighbor4).second -
-            points->at(closestNeighbor4).first * points->at(closestNeighbor3).second) / 3;
-
-        double candidate2 = abs(line2A * points->at(point2Index).first + line2B * points->at(point2Index).second + line2C) /
-            sqrt(line2A * line2A + line2B * line2B);
-
-
-        return max(candidate1, candidate2);
+        double rhoStep = 0.0;
+        for (int i = 0; i < 3; i++)
+            rhoStep += candidates[i];
+        return rhoStep / 3;
     }
 
     static vector<pair<double, double >>
     vectorization(vector<pair<float, float >> points,
                   error_vectorization error) {
 
-        error.rhoStep = 1.5 * rhoStepEstimation(&points);
+        error.rhoStep = 1.2 * rhoStepEstimation(&points);
         if (error.rhoStep <= 0.01) {
             error.rhoStep = 0.01;
         }
