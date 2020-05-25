@@ -16,4 +16,6 @@
 #define SAY(X...)
 
 #endif
+
+
 #endif //VECORIZATION_PARALLELOGRAMS_DEBUG_H

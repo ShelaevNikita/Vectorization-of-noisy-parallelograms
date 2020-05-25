@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Vectorization_parallelograms.cpp"
+#include "Vectorization_parallelograms.h"
 using namespace std;
 
 int main(int argc, char** argv) {
