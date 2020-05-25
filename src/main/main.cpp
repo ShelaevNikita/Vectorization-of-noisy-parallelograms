@@ -2,7 +2,7 @@
 #include "Vectorization_parallelograms.cpp"
 using namespace std;
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 
     cout << fixed;
     cout.precision(6);

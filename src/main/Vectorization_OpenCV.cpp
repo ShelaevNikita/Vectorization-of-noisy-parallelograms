@@ -66,7 +66,7 @@ public:
 
     void fourLeaders(vector<Vec3d>* houghOutput, vector<lineABC>* leaders) {
 
-        double rhoInterval = rhoStep * 30, thetaInterval = thetaStep * 600;
+        double rhoInterval = rhoStep * 15, thetaInterval = thetaStep * 600;
         double deltaRho, deltaTheta;
 
         vector<pair<double, double>> leadersTemp;
