@@ -33,9 +33,9 @@ public:
     vectorization_parallelograms(const string &fname, error_vectorization error = {0.1,
                                                                                    CV_PI / 3600.0,
                                                                                    1.0e-10,
-                                                                                   1.0e-15,
+                                                                                   1.0e-25,
                                                                                    2.0,
-                                                                                   3000,
+                                                                                   5000,
                                                                                    5}) {
         ifstream inputFile(fname);
         vector<pair<float, float>> points;
@@ -58,9 +58,9 @@ public:
                                  error_vectorization error = {0.1,
                                                               CV_PI / 3600.0,
                                                               1.0e-10,
-                                                              1.0e-15,
+                                                              1.0e-25,
                                                               2.0,
-                                                              3000,
+                                                              5000,
                                                               5}) {
 
         return vectorization(move(points), error);
@@ -205,9 +205,9 @@ private:
          /*
             MSD - mean square deviation:
             error_fmin - error of the "Golden section"; default = 1.0e-10
-            error_MSD - error in finding the best result for MSD; default = 1.0e-15
+            error_MSD - error in finding the best result for MSD; default = 1.0e-20
             max_counter - maximum number of iterations per cycle; default = 3000
-            count - priority of a parallelogram in choosing between it and a quadrilateral; count > 0 , default = 1.5
+            count - priority of a parallelogram in choosing between it and a quadrilateral; count > 0 , default = 1.0
          */
 
          MSD MSD_foo(error.error_fmin, error.error_MSD, error.max_counter, error.count);
@@ -217,7 +217,8 @@ private:
          SAY("\t\t     result: \n");
          for (int i = 0; i <= 3; i++)
             SAY(" \t x = %f \t y = %f\n", result_k[i].first, result_k[i].second);
-         SAY("___________________________________________________________________________\n");
+         SAY("\t\tERROR: %f", error_result);
+         SAY("\n___________________________________________________________________________\n");
         return result_k;
     }
 };
