@@ -59,17 +59,23 @@ private:
 
     void find_min_MSD_para(line_result (&res)[4], int pair1, int pair2, vector<vector<pair<double, double>>> array_of_points) {
         double result = 0.0;
-        double result_last = result + 2 * error_MSD;
+        double result_last = 2 * error_MSD;
         int counter = 0;
         bool flag = true;
         double err = abs(result_last - result);
         double b1 = (res[pair1].bmin + res[pair1].bmax) / 2;
         double b2 = (res[pair2].bmin + res[pair2].bmax) / 2;
         double k = (res[pair1].k + res[pair2].k) / 2;
+        double sum = 0.0;
+        for (int i = 0; i < array_of_points[pair1].size(); i++)
+            sum += pow(array_of_points[pair1][i].first, 2);
+        for (int j = 0; j < array_of_points[pair2].size(); j++)
+            sum += pow(array_of_points[pair2][j].first, 2);
+        double delta = (sqrt(5) - 1) / 2;
         if (k >= 1.0e5) flag = false;
         while (err >= error_MSD && counter <= max_counter) {
              result = f_min_para(flag, res[pair1].bmin, res[pair1].bmax, res[pair2].bmin,
-                 res[pair2].bmax, k, b1, b2, array_of_points[pair1], array_of_points[pair2]);
+                 res[pair2].bmax, k, b1, b2, array_of_points[pair1], array_of_points[pair2], sum, delta);
              if (b1 < res[pair1].bmin + 1) res[pair1].bmin -= 30;
              if (b1 > res[pair1].bmax - 1) res[pair1].bmax += 30;
              if (b2 < res[pair2].bmin + 1) res[pair2].bmin -= 30;
@@ -117,14 +123,8 @@ private:
     }
 
     double f_min_para(bool &flag, double bmin1, double bmax1, double bmin2, double bmax2, double &k, double &b1, double &b2,
-            vector<pair<double, double>> points1, vector<pair<double, double>> points2) {
-        double sum = 0.0;
+            vector<pair<double, double>> points1, vector<pair<double, double>> points2, double sum, double delta) {
         double Lcenter, Rcenter, Lfcenter, Rfcenter, beg, end, BegBuf, EndBuf;
-        for (int i = 0; i < points1.size(); i++)
-            sum += pow(points1[i].first, 2);
-        for (int j = 0; j < points2.size(); j++)
-            sum += pow(points2[j].first, 2);
-        double delta = (sqrt(5) - 1) / 2;
         for (int j = 0; j <= 1; j++) {
             if (j == 0) {
                 beg = bmin1;
@@ -173,13 +173,18 @@ private:
                 vector<vector<pair<double, double>>> array_of_points) {
         double b = (res[number].bmin + res[number].bmax) / 2;
         double result = 0.0;
-        double result_last = result + 2 * error_MSD;
+        double result_last = 2 * error_MSD;
         int counter = 0;
         bool flag = true;
         if (res[number].k >= 1.0e5) flag = false;
+        double sum = 0.0;
+        for (int i = 0; i < array_of_points[number].size(); i++)
+            sum += pow(array_of_points[number][i].first, 2);
+        double delta = (sqrt(5) - 1) / 2;
         double err = abs(result_last - result);
         while (err >= error_MSD && counter <= max_counter) {
-            result = f_min_mono(flag, res[number].bmin, res[number].bmax, res[number].k, b, array_of_points[number]);
+            result = f_min_mono(flag, res[number].bmin, res[number].bmax, res[number].k, b, array_of_points[number],
+                sum, delta);
             if (b < res[number].bmin + 1) res[number].bmin -= 30;
             if (b > res[number].bmax - 1) res[number].bmax += 30;
             err = abs(result_last - result);
@@ -207,12 +212,9 @@ private:
         return k1;
     }
 
-    double f_min_mono(bool &flag, double bmin, double bmax, double &k, double &b, vector<pair<double, double>> points) {
-        double sum = 0.0;
-        for (int i = 0; i < points.size(); i++)
-            sum += pow(points[i].first, 2);
+    double f_min_mono(bool &flag, double bmin, double bmax, double &k, double &b, vector<pair<double, double>> points,
+        double sum, double delta) {
         double Lcenter, Rcenter, Lfcenter, Rfcenter, beg, end, BegBuf, EndBuf;
-        double delta = (sqrt(5) - 1) / 2;
         beg = bmin;
         end = bmax;
         BegBuf = foo_fmin_mono(flag, k, sum, beg, points);
@@ -284,12 +286,12 @@ private:
             SAY(" Compare = MSD_para / (MSD_mono1 + MSD_mono2) = %f\n", compare);
             if (compare > count) {
                 result.push_back(make_pair(result_mono[pair_first].first, result_mono[pair_first].second));
-                SAY("\t quadrangle\n");
+                 SAY("\t quadrangle\n");
                 result.push_back(make_pair(result_mono[pair_second].first, result_mono[pair_second].second));
                 error_result += (res_mono[pair_first].MSD + res_mono[pair_second].MSD);
             } else {
                 result.push_back(make_pair(result_para[pair_first].first, result_para[pair_first].second));
-                SAY("\t parallelogram\n");
+                 SAY("\t parallelogram\n");
                 result.push_back(make_pair(result_para[pair_second].first, result_para[pair_second].second));
                 error_result += res_para[pair_first].MSD;
             }
@@ -315,8 +317,8 @@ private:
                 bsr = -Lines[i].c / Lines[i].a;
                 res_para[i].k = 1.0e5;                                     // x = b
             }
-            res_para[i].bmin = bsr - 15;
-            res_para[i].bmax = bsr + 15;
+            res_para[i].bmin = bsr - 20;
+            res_para[i].bmax = bsr + 20;
             res_mono[i] = res_para[i];
         }
         pairs_of_parallel_lines squad_pairs;
@@ -328,9 +330,9 @@ private:
         vector<pair<double, double>> result_para = intersection(res_para, squad_pairs.pair12);
         vector<pair<double, double>> result_mono = intersection(res_mono, squad_pairs.pair12);
         for (i = 0; i <= 3; i++)
-            SAY(" k_para = %f\t b_para = %f\t MSD_para = %f\n", res_para[i].k, res_para[i].b, res_para[i].MSD);
+             SAY(" k_para = %f\t b_para = %f\t MSD_para = %f\n", res_para[i].k, res_para[i].b, res_para[i].MSD);
         for (i = 0; i <= 3; i++)
-            SAY("\t k_mono = %f\t b_mono = %f\t MSD_mono = %f\n", res_mono[i].k, res_mono[i].b, res_mono[i].MSD);
+             SAY("\t k_mono = %f\t b_mono = %f\t MSD_mono = %f\n", res_mono[i].k, res_mono[i].b, res_mono[i].MSD);
         vector<pair<double, double>> result_full = 
             comparison(res_para, res_mono, squad_pairs, result_para, result_mono, error_result);
         return result_full;
