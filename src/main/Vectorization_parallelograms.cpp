@@ -77,7 +77,7 @@ private:
         double b = (res.bmin + res.bmax) / 2;
         double result = 0.0;
 
-        double error_MSD = 1.0e-25;
+        double error_MSD = 1.0e-20;
 
         double result_last = result + 2 * error_MSD;
         int counter = 0;
@@ -86,7 +86,7 @@ private:
             flag = false;
         double err = abs(result_last - result);
 
-        int max_counter = 5000;
+        int max_counter = 2500;
 
         while (err >= error_MSD && counter <= max_counter) {
             result = f_min(flag, res.bmin, res.bmax, res.k, b, array_of_points);
@@ -129,7 +129,7 @@ private:
         BegBuf = foo_fmin(flag, k, sum, beg, points);
         EndBuf = foo_fmin(flag, k, sum, end, points);
 
-        int max_counter = 5000;
+        int max_counter = 2500;
         double error_fmin = 1.0e-10;
 
         for (int i = 0; i <= max_counter; i++) {
@@ -216,8 +216,8 @@ private:
                 bsr = -lineC / lineA;
                 res.k = 1.0e5;                                     // x = b
             }
-            res.bmin = bsr - 15;
-            res.bmax = bsr + 15;
+            res.bmin = bsr - 20;
+            res.bmax = bsr + 20;
 
             vector<pair<double, double>> triplet =
             { points->at(midPoint[i]), points->at(neighbors[i].first), points->at(neighbors[i].second) };
