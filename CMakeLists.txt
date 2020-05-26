@@ -15,10 +15,11 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_executable(${PROJECT_NAME} ${SOURCES_DIR}LinesDetection.cpp
+add_executable(${PROJECT_NAME}
+        ${SOURCES_DIR}main.cpp
+        ${SOURCES_DIR}LinesDetection.cpp
         ${SOURCES_DIR}Vectorization_parallelograms.cpp
         ${SOURCES_DIR}MSD.cpp
-        ${SOURCES_DIR}main.cpp
         ${SOURCES_DIR}debug.h
         ${SOURCES_DIR}Vectorization_parallelograms.h
         ${SOURCES_DIR}MSD.h

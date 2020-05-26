@@ -43,21 +43,9 @@ public:
 
 private:
 
-    struct line_result {
-        double k{}, bmin{}, bmax{}, b{};
-        bool flag = true;
-    };
-
-    static void find_min_MSD(line_result (&res), const vector<pair<double, double>> &array_of_points);
-
-    static double foo_fmin(bool &flag, double &k, double sum, double b, vector<pair<double, double>> points);
-
-    static double
-    f_min(bool &flag, double bmin, double bmax, double &k, double &b, const vector<pair<double, double>> &points);
-
     static pair<int, int> twoNeighbors(vector<pair<float, float>> *points, int midPoint);
 
-    static double rhoStepEstimation(vector<pair<float, float>> *points);
+    static double rhoStepEstimation(vector<pair<float, float>> *points, error_vectorization error);
 
     static vector<pair<double, double >>
     vectorization(vector<pair<float, float >> points,

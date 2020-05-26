@@ -18,7 +18,6 @@ private:
 public:
     MSD(double error_fmin, double error_MSD, int max_counter, double count);
 
-private:
 
     struct pairs_of_parallel_lines {
         int pair11 = 0;
@@ -30,6 +29,7 @@ private:
         double k{}, bmin{}, bmax{}, b{}, MSD{};
         bool flag = true;
     };
+private:
 
     static void find_pairs(line_result res[4], pairs_of_parallel_lines &result);
 
@@ -44,14 +44,17 @@ private:
                const vector<pair<double, double>> &points1, const vector<pair<double, double>> &points2, double sum,
                double delta);
 
-    void find_min_MSD_mono(line_result (&res)[4], int number,
-                           vector<vector<pair<double, double>>> array_of_points);
+public:
+
+    void find_min_MSD_mono(line_result &res, const vector<pair<double, double>> &points);
+
+private:
 
     static double foo_fmin_mono(bool &flag, double &k, double sum, double b, vector<pair<double, double>> points);
 
     double
     f_min_mono(bool &flag, double bmin, double bmax, double &k, double &b, const vector<pair<double, double>> &points,
-               double sum, double delta);
+               double sum);
 
     static vector<pair<double, double>> intersection(line_result res[4], int pair1);
 
@@ -61,7 +64,7 @@ private:
                                             vector<pair<double, double>> result_mono, double &error_result);
 
 public:
-    vector<pair<double, double>> MSD_main(const vector<vector<pair<double, double>>> &Points,
+    vector<pair<double, double>> MSD_main(const vector<vector<pair<double, double>>> &points,
                                           vector<lineABC> Lines, double &error_result);
 
 };

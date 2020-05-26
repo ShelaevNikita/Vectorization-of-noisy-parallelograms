@@ -142,31 +142,30 @@ MSD::f_min_para(bool &flag, double bmin1, double bmax1, double bmin2, double bma
     return (foo_fmin_para(flag, k, sum, b1, b2, points1, points2));
 }
 
-void MSD::find_min_MSD_mono(line_result (&res)[4], int number,
-                            vector<vector<pair<double, double>>> array_of_points) {
-    double b = (res[number].bmin + res[number].bmax) / 2;
+void MSD::find_min_MSD_mono(line_result &res,
+                            const vector<pair<double, double>> &points) {
+    double b = (res.bmin + res.bmax) / 2;
     double result = 0.0;
     double result_last = 2 * error_MSD;
     int counter = 0;
     bool flag = true;
-    if (res[number].k >= 1.0e5) flag = false;
+    if (res.k >= 1.0e5) flag = false;
     double sum = 0.0;
-    for (auto &i : array_of_points[number])
+    for (auto &i : points)
         sum += pow(i.first, 2);
-    double delta = (sqrt(5) - 1) / 2;
+
     double err = abs(result_last - result);
     while (err >= error_MSD && counter <= max_counter) {
-        result = f_min_mono(flag, res[number].bmin, res[number].bmax, res[number].k, b, array_of_points[number],
-                            sum, delta);
-        if (b < res[number].bmin + 1) res[number].bmin -= 30;
-        if (b > res[number].bmax - 1) res[number].bmax += 30;
+        result = f_min_mono(flag, res.bmin, res.bmax, res.k, b, points, sum);
+        if (b < res.bmin + 1) res.bmin -= 30;
+        if (b > res.bmax - 1) res.bmax += 30;
         err = abs(result_last - result);
         result_last = result;
         counter++;
     }
-    if (!flag) res[number].flag = false;
-    res[number].b = b;
-    res[number].MSD = sqrt(result);
+    if (!flag) res.flag = false;
+    res.b = b;
+    res.MSD = sqrt(result);
 }
 
 double MSD::foo_fmin_mono(bool &flag, double &k, double sum, double b, vector<pair<double, double>> points) {
@@ -187,8 +186,9 @@ double MSD::foo_fmin_mono(bool &flag, double &k, double sum, double b, vector<pa
 
 double
 MSD::f_min_mono(bool &flag, double bmin, double bmax, double &k, double &b, const vector<pair<double, double>> &points,
-                double sum, double delta) {
+                double sum) {
     double Lcenter, Rcenter, Lfcenter, Rfcenter, beg, end;
+    double delta = (sqrt(5) - 1) / 2;
     beg = bmin;
     end = bmax;
     foo_fmin_mono(flag, k, sum, beg, points);
@@ -273,7 +273,7 @@ vector<pair<double, double>> MSD::comparison(line_result res_para[4], line_resul
 }
 
 
-vector<pair<double, double>> MSD::MSD_main(const vector<vector<pair<double, double>>> &Points,
+vector<pair<double, double>> MSD::MSD_main(const vector<vector<pair<double, double>>> &points,
                                            vector<lineABC> Lines, double &error_result) {
     line_result res_para[4], res_mono[4];
     int i;
@@ -294,10 +294,10 @@ vector<pair<double, double>> MSD::MSD_main(const vector<vector<pair<double, doub
     }
     pairs_of_parallel_lines squad_pairs;
     find_pairs(res_para, squad_pairs);
-    find_min_MSD_para(res_para, squad_pairs.pair11, squad_pairs.pair12, Points);
-    find_min_MSD_para(res_para, squad_pairs.pair21, squad_pairs.pair22, Points);
+    find_min_MSD_para(res_para, squad_pairs.pair11, squad_pairs.pair12, points);
+    find_min_MSD_para(res_para, squad_pairs.pair21, squad_pairs.pair22, points);
     for (i = 0; i <= 3; i++)
-        find_min_MSD_mono(res_mono, i, Points);
+        find_min_MSD_mono(res_mono[i], points[i]);
     vector<pair<double, double>> result_para = intersection(res_para, squad_pairs.pair12);
     vector<pair<double, double>> result_mono = intersection(res_mono, squad_pairs.pair12);
     for (i = 0; i <= 3; i++)
