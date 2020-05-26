@@ -104,15 +104,24 @@ double Vectorization_parallelograms::rhoStepEstimation(vector<pair<float, float>
             rho[i] = max(rho[i], sqrt(pow(tmp - x[j], 2) + pow(k * tmp + b - y[j], 2)));
         }
     }
-    sort(rho.begin(), rho.end());
-    int rm = 4; // rm the largest and smallest rho
-    for (int i = rm; i < rho.size() - rm; i++)
-        sum_rho += rho[i];
 
-    double r = sum_rho / (double) (points->size() - 2 * rm);
-    if (r <= 0.01) return 0.01;
-    if (r <= 0.1) return 0.1;
-    else return 1.2 * r;
+    sort(rho.begin(), rho.end());
+
+    int medium_rho = 0;
+    for (int i = 0; i < rho.size(); i++)
+        if (rho[i] >= 0.01)
+            medium_rho++;
+
+    int small_rho = 0;
+    for (int i = 0; i < rho.size() - 8; i++) { // excluding 8 biggest rho[i] (possibly corners)
+        if (medium_rho > 8 && rho[i] < 0.01) // if the majority is mostly medium-noised
+            small_rho++;
+        else
+            sum_rho += rho[i];
+    }
+
+    double r = sum_rho / (double) (points->size() - small_rho - 8);
+    return 1.2 * r;
 }
 
 vector<pair<double, double >>
