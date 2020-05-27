@@ -1,7 +1,8 @@
-#include <iostream>
-#include <cmath>
 #include "debug.h"
 
+                ;
+#include <iostream>
+#include <cmath>
 #include "MSD.h"
 
 MSD::MSD(double error_fmin, double error_MSD, int max_counter, double count) {
@@ -301,9 +302,7 @@ vector<pair<double, double>> MSD::MSD_main(const vector<vector<pair<double, doub
     vector<pair<double, double>> result_para = intersection(res_para, squad_pairs.pair12);
     vector<pair<double, double>> result_mono = intersection(res_mono, squad_pairs.pair12);
     for (i = 0; i <= 3; i++)
-        SAY(" k_para = %f\t b_para = %f\t MSD_para = %f\n", res_para[i].k, res_para[i].b, res_para[i].MSD);
-    for (i = 0; i <= 3; i++)
-        SAY("\t k_mono = %f\t b_mono = %f\t MSD_mono = %f\n", res_mono[i].k, res_mono[i].b, res_mono[i].MSD);
+        SAY("%fx + %f\t MSD_para = %f\n", res_para[i].k, res_para[i].b, res_para[i].MSD);
     vector<pair<double, double>> result_full =
             comparison(res_para, res_mono, squad_pairs, result_para, result_mono, error_result);
     return result_full;

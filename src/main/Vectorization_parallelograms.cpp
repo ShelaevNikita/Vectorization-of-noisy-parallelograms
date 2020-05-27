@@ -106,29 +106,22 @@ double Vectorization_parallelograms::rhoStepEstimation(vector<pair<float, float>
     }
 
     sort(rho.begin(), rho.end());
+    int rm = 4; // rm the largest and smallest rho
+    for (int i = rm; i < rho.size() - rm; i++)
+        sum_rho += rho[i];
 
-    int medium_rho = 0;
-    for (int i = 0; i < rho.size(); i++)
-        if (rho[i] >= 0.01)
-            medium_rho++;
-
-    int small_rho = 0;
-    for (int i = 0; i < rho.size() - 8; i++) { // excluding 8 biggest rho[i] (possibly corners)
-        if (medium_rho > 8 && rho[i] < 0.01) // if the majority is mostly medium-noised
-            small_rho++;
-        else
-            sum_rho += rho[i];
-    }
-
-    double r = sum_rho / (double) (points->size() - small_rho - 8);
-    return 1.2 * r;
+    double r = sum_rho / (double) (points->size() - 2 * rm);
+    if (r <= 0.01) return 0.01;
+    if (r <= 0.1) return 0.1;
+    else return 1.2 * r;
 }
 
 vector<pair<double, double >>
 Vectorization_parallelograms::vectorization(vector<pair<float, float >> points,
                                             error_vectorization error) {
+    if (error.rhoStep == -1)
+        error.rhoStep = rhoStepEstimation(&points, error);
 
-    error.rhoStep = rhoStepEstimation(&points, error);
     SAY("rhoStep = %f\n", error.rhoStep);
 
     LinesDetection mainObject(error.rhoStep, error.thetaStep, error.interval);
@@ -136,8 +129,6 @@ Vectorization_parallelograms::vectorization(vector<pair<float, float >> points,
     // MAIN CALL of parallelogram
     vector<Vec3d> line3dFirst;
     mainObject.parallelogram(&points, &line3dFirst);
-
-    SAY("Number of lines: %lu\n", line3dFirst.size());
 
     // Finding 4 leaders of 1.txt and distributing its points between the 4 leaders
     vector<lineABC> leaders;
@@ -167,10 +158,10 @@ Vectorization_parallelograms::vectorization(vector<pair<float, float >> points,
     double error_result = 0.0;
     vector<pair<double, double>> result_k = MSD_foo.MSD_main(pointsSet, leaders, error_result);
 
-    SAY("\t\t     result: \n");
+    SAY("\t\t\t\tresult: \n");
     for (int i = 0; i <= 3; i++)
         SAY(" \t x = %f \t y = %f\n", result_k[i].first, result_k[i].second);
     SAY("\t\tERROR: %f", error_result);
-    SAY("\n___________________________________________________________________________\n");
+    SAY("___________________________________________________________________________\n");
     return result_k;
 }

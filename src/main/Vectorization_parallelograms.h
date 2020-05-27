@@ -12,7 +12,7 @@ using namespace std;
 class Vectorization_parallelograms{
 public:
     struct error_vectorization {
-        double rhoStep,
+        double  rhoStep,
                 thetaStep,
                 error_fmin,
                 error_MSD,
@@ -23,7 +23,7 @@ public:
     };
 
     static vector<pair<double, double >>
-    vectorization_parallelograms(const string &fname, error_vectorization error = {0.1,
+    vectorization_parallelograms(const string &fname, error_vectorization error = {-1,
                                                                                    CV_PI / 3600.0,
                                                                                    1.0e-10,
                                                                                    1.0e-20,
@@ -33,7 +33,7 @@ public:
 
     static vector<pair<double, double >>
     vectorization_parallelograms(vector<pair<float, float>> points,
-                                 error_vectorization error = {0.1,
+                                 error_vectorization error = {-1,
                                                               CV_PI / 3600.0,
                                                               1.0e-10,
                                                               1.0e-20,
