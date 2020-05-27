@@ -161,7 +161,7 @@ Vectorization_parallelograms::vectorization(vector<pair<float, float >> points,
     SAY("\t\t\t\tresult: \n");
     for (int i = 0; i <= 3; i++)
         SAY(" \t x = %f \t y = %f\n", result_k[i].first, result_k[i].second);
-    SAY("\t\tERROR: %f", error_result);
+    SAY("\t\tERROR: %f\n", error_result);
     SAY("___________________________________________________________________________\n");
     return result_k;
 }

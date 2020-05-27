@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include <cmath>
-
 #include "LinesDetection.h"
 
 // First distribution type: point goes ONLY to the closest by distance line.

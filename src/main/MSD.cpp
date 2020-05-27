@@ -1,6 +1,4 @@
 #include "debug.h"
-
-                ;
 #include <iostream>
 #include <cmath>
 #include "MSD.h"
