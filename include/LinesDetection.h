@@ -1,10 +1,10 @@
 #ifndef VECORIZATION_PARALLELOGRAMS_LINESDETECTION_H
 #define VECORIZATION_PARALLELOGRAMS_LINESDETECTION_H
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
 #include <utility>
-#include "vector"
+#include <vector>
+#include "opencv2/core.hpp"
+#include "opencv2/imgproc.hpp"
 #include "structures.h"
 
 using namespace cv;

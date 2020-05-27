@@ -1,7 +1,6 @@
 #include <fstream>
 #include "LinesDetection.h"
 #include "MSD.h"
-#include <random>
 #include "debug.h"
 #include <algorithm>
 #include "Vectorization_parallelograms.h"

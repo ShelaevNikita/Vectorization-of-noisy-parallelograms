@@ -1,11 +1,7 @@
-//
-// Created by maratdin7 on 25.05.2020.
-//
-
 #ifndef VECORIZATION_PARALLELOGRAMS_VECTORIZATION_PARALLELOGRAMS_H
 #define VECORIZATION_PARALLELOGRAMS_VECTORIZATION_PARALLELOGRAMS_H
 
-#include <opencv2/core.hpp>
+#include "opencv2/core.hpp"
 #include <vector>
 
 using namespace std;
