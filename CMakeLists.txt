@@ -3,17 +3,16 @@ set(PROJECT_NAME Vecorization_parallelograms)
 
 project(${PROJECT_NAME})
 
+set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src/main/)
+set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/)
+
 if (WIN32)
 
-    set(SOURCES_DIR ${PROJECT_SOURCE_DIR}\\src\\main\\)
-    set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}\\include\\)
-    set(LIBS_DIR ${PROJECT_SOURCE_DIR}\\lib\\windows)
-    set(OPENCV_LIBS )
+    set(OPENCV_LIBS_DIR ${PROJECT_SOURCE_DIR}/lib/windows)
+    set(OPENCV_LIBS opencv_world420.lib opencv_world420d.lib)
 
 elseif (UNIX)
 
-    set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src/main/)
-    set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/)
     set(OPENCV_LIBS_DIR ${PROJECT_SOURCE_DIR}/lib/linux)
     set(OPENCV_LIBS libopencv_core.so libopencv_imgproc.so)
 
