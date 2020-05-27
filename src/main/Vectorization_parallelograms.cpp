@@ -121,7 +121,7 @@ Vectorization_parallelograms::vectorization(vector<pair<float, float >> points,
     if (error.rhoStep == -1)
         error.rhoStep = rhoStepEstimation(&points, error);
 
-    SAY("rhoStep = %f\n", error.rhoStep);
+    //SAY("rhoStep = %f\n", error.rhoStep);
 
     LinesDetection mainObject(error.rhoStep, error.thetaStep, error.interval);
 
@@ -136,14 +136,12 @@ Vectorization_parallelograms::vectorization(vector<pair<float, float >> points,
     vector<vector<pair<double, double>>> pointsSet(4);
     mainObject.pointDistribution(&leaders, &points, &pointsSet);
 
-    for (int i = 0; i < 4; i++) {
+    /*for (int i = 0; i < 4; i++) {
         SAY("Leader %d: %lu points, %fx + %fy + %f = 0 \n", i + 1, pointsSet[i].size(), leaders[i].a,
             leaders[i].b, leaders[i].c);
-        for (auto &j : pointsSet[i])
-            SAY("\t(%f, %f)\n", j.first, j.second);
-    }
+    }*/
 
-    SAY("\n");
+    //SAY("\n");
 
     /*
        MSD - mean square deviation:
@@ -157,10 +155,10 @@ Vectorization_parallelograms::vectorization(vector<pair<float, float >> points,
     double error_result = 0.0;
     vector<pair<double, double>> result_k = MSD_foo.MSD_main(pointsSet, leaders, error_result);
 
-    SAY("\t\t\t\tresult: \n");
+    SAY("\t\t\t\tresult \n");
     for (int i = 0; i <= 3; i++)
         SAY(" \t x = %f \t y = %f\n", result_k[i].first, result_k[i].second);
-    SAY("\t\tERROR: %f\n", error_result);
+    //SAY("\t\tERROR: %f\n", error_result);
     SAY("___________________________________________________________________________\n");
     return result_k;
 }

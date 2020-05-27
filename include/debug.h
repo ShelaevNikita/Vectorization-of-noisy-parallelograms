@@ -1,15 +1,12 @@
-//
-// Created by maratdin7 on 26.04.2020.
-//
 
 #ifndef VECORIZATION_PARALLELOGRAMS_DEBUG_H
 #define VECORIZATION_PARALLELOGRAMS_DEBUG_H
 
-#define DEBUG
+#define SAYF
 
-#ifdef DEBUG
+#ifdef SAYF
 
-#define SAY(...) fprintf(stderr, __VA_ARGS__)
+#define SAY(...) fprintf(stdout, __VA_ARGS__)
 
 #else
 

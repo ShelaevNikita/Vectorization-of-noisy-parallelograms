@@ -3,7 +3,6 @@
 
 #include "opencv2/core.hpp"
 #include <vector>
-
 using namespace std;
 class Vectorization_parallelograms{
 public:
