@@ -253,15 +253,15 @@ vector<pair<double, double>> MSD::comparison(line_result res_para[4], line_resul
     int pair_second = squad_pairs.pair12;
     for (int i = 0; i <= 1; i++) {
         double compare = res_para[pair_first].MSD / (res_mono[pair_first].MSD + res_mono[pair_second].MSD);
-        SAY(" Compare = MSD_para / (MSD_mono1 + MSD_mono2) = %f\n", compare);
+        //SAY(" Compare = MSD_para / (MSD_mono1 + MSD_mono2) = %f\n", compare);
         if (compare > count) {
             result.emplace_back(result_mono[pair_first].first, result_mono[pair_first].second);
-            SAY("\t quadrangle\n");
+            //SAY("\t quadrangle\n");
             result.emplace_back(result_mono[pair_second].first, result_mono[pair_second].second);
             error_result += (res_mono[pair_first].MSD + res_mono[pair_second].MSD);
         } else {
             result.emplace_back(result_para[pair_first].first, result_para[pair_first].second);
-            SAY("\t parallelogram\n");
+            //SAY("\t parallelogram\n");
             result.emplace_back(result_para[pair_second].first, result_para[pair_second].second);
             error_result += res_para[pair_first].MSD;
         }
