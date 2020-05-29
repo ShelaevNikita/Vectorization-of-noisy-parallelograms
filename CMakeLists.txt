@@ -1,22 +1,41 @@
 cmake_minimum_required(VERSION 2.8)
-set(PROJECT_NAME Vecorization_parallelograms)
+set(PROJECT_NAME Vectorization_parallelograms)
 
 project(${PROJECT_NAME})
 
+set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src/main/)
+set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/)
+
+
 if (WIN32)
-    set(SOURCES_DIR ${PROJECT_SOURCE_DIR}\\src\\main\\)
+
+    set(OPENCV_LIBS_DIR ${PROJECT_SOURCE_DIR}/lib/windows)
+    set(OPENCV_LIBS_NAMES             )
+
 elseif (UNIX)
-    set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src/main/)
+
+    set(OPENCV_LIBS_DIR ${PROJECT_SOURCE_DIR}/lib/linux)
+    set(OPENCV_LIBS_NAMES libopencv_core.so libopencv_imgproc.so)
+
 else ()
-    message(FATAL_ERROR "Неизвестная система")
+
+    message(FATAL_ERROR "Unknown operating system")
+
 endif ()
 
-find_package(OpenCV REQUIRED)
+include_directories(${INCLUDE_DIR})
+link_directories(${OPENCV_LIBS_DIR})
 
-include_directories(${OpenCV_INCLUDE_DIRS})
-
-add_executable(${PROJECT_NAME} ${SOURCES_DIR}Vectorization_OpenCV.cpp
+set(SOURCES ${SOURCES_DIR}LinesDetection.cpp
         ${SOURCES_DIR}Vectorization_parallelograms.cpp
-        ${SOURCES_DIR}MSD.cpp
-        ${SOURCES_DIR}main.cpp src/main/debug.h)
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
+        ${SOURCES_DIR}MSD.cpp)
+
+set(HEADERS ${INCLUDE_DIR}debug.h
+        ${INCLUDE_DIR}Vectorization_parallelograms.h
+        ${INCLUDE_DIR}MSD.h
+        ${INCLUDE_DIR}LinesDetection.h
+        ${INCLUDE_DIR}structures.h)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER} ${SOURCES})
+
+target_link_libraries(${PROJECT_NAME} ${OPENCV_LIBS_NAMES})

@@ -1,5 +1,0 @@
-.\\Materials\\1.txt
-.\\Materials\\2.txt
-.\\Materials\\3.txt
-.\\Materials\\4.txt
-.\\Materials\\5.txt
