@@ -1,8 +1,8 @@
 #include <fstream>
+#include <algorithm>
 #include "LinesDetection.h"
 #include "MSD.h"
 #include "debug.h"
-#include <algorithm>
 #include "Vectorization_parallelograms.h"
 
 vector<pair<double, double >>
